@@ -6,6 +6,11 @@ session_start();
 //   header("Location: index.php");
 // }
 
+require_once("dbc.php");
+
+$sql = "SELECT * FROM tasks";
+$result = mysqli_query($conn, $sql);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +28,26 @@ session_start();
     </header>
 
     <section class="task-list">
-      <!-- Task cards will be dynamically populated by your backend -->
+      <?php
+      if (mysqli_num_rows($result) > 0) {
+        // output data of each row
+        while($row = mysqli_fetch_assoc($result)) {
+      ?>
+        <div class="task-card">
+            <h3><?= $row['task_title'] ?></h3>
+            <p><?= $row['task_description'] ?></p>
+            <form action="editTask.php" method="POST">
+              <input type="hidden" name="taskId" value="<?= $row['task_id'] ?>">
+              <input type="hidden" name="taskTitle" value="<?= $row['task_title'] ?>">
+              <input type="hidden" name="taskDescription" value="<?= $row['task_description'] ?>">
+              <input type="hidden" name="userId" value="<?= $row['user_id'] ?>">
+              <button type="submit" class="view-task" name="editTask">Edit Task</button>
+            </form>
+        </div>
+      <?php
+        }
+      }
+      ?>
     </section>
   </div>
 
@@ -32,7 +56,6 @@ session_start();
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Add New Task</h2>
-      <!-- Form method is POST to handle PHP backend -->
       <form id="taskForm" method="POST" action="process.php">
         <label for="title">Task Title</label>
         <input type="text" id="title" name="title" required>
