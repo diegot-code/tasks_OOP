@@ -16,14 +16,16 @@ session_start();
   <div class="login-container">
     <div class="login-box">
       <h2>Login</h2>
-      <form action="login.php" method="POST" class="login-form">
-        <label for="username">Username</label>
+      <form action="process.php" method="POST" class="login-form">
+        <!-- <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
 
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required> -->
+        <label for="userid">User ID</label>
+        <input type="text" id="userid" name="user_id">
 
-        <button type="submit">Login</button>
+        <button type="submit" name="processType" value="login">Login</button>
       </form>
     </div>
   </div>

@@ -19,14 +19,15 @@
         <label for="description">Task Description</label>
         <textarea id="description" name="description" rows="4" required><?= $_POST['taskDescription'] ?></textarea>
 
-        <button name="updateTask" type="submit">Save Changes</button>
+        <button name="processType" name="updateTask" 
+        value="updateTask" type="submit">Save Changes</button>
       </form>
 
       <!-- Delete Task button -->
       <form id="deleteTaskForm" method="POST" action="process.php">
         <!-- You may pass the task ID in a hidden input -->
         <input type="hidden" name="taskId" value="<?= $_POST['taskId'] ?>">
-        <button type="submit" name="deleteTask" class="delete-btn">Delete Task</button>
+        <button type="submit" name="processType" value="deleteTask" class="delete-btn">Delete Task</button>
       </form>
     </div>
   </div>

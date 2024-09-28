@@ -2,7 +2,7 @@
 
 session_start();
 
-// if(!isset($_SESSION['user-id'])) {
+// if(!isset($_SESSION['user_id'])) {
 //   header("Location: index.php");
 // }
 
@@ -63,7 +63,7 @@ $result = mysqli_query($conn, $sql);
         <label for="description">Description</label>
         <textarea id="description" name="description" rows="4" required></textarea>
 
-        <button name="addTask" type="submit">Add Task</button>
+        <button name="processType" value="addTask" type="submit">Add Task</button>
       </form>
     </div>
   </div>
