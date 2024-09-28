@@ -63,7 +63,7 @@ $result = mysqli_query($conn, $sql);
         <label for="description">Description</label>
         <textarea id="description" name="description" rows="4" required></textarea>
 
-        <button type="submit">Add Task</button>
+        <button name="addTask" type="submit">Add Task</button>
       </form>
     </div>
   </div>

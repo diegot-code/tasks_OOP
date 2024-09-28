@@ -3,19 +3,38 @@
 session_start();
 require_once("dbc.php");
 
-$title = $_POST['title'];
-$desc = $_POST['description'];
 
-$sql = "INSERT INTO tasks (task_title, task_description, user_id)
-VALUES ('$title', '$desc', '1')";
+if(isset($_POST['addTask'])) {
+    $title = $_POST['title'];
+    $desc = $_POST['description'];
 
-if (mysqli_query($conn, $sql)) {
-  header("Location: dashboard.php");
-} else {
-  echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    $addsql = "INSERT INTO tasks (task_title, task_description, user_id)
+    VALUES ('$title', '$desc', '1')";
+
+    if (mysqli_query($conn, $addsql)) {
+    header("Location: dashboard.php");
+    } else {
+    echo "Error: " . $addsql . "<br>" . mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
 }
 
-mysqli_close($conn);
+if(isset($_POST['updateTask'])) {
+    $id = $_POST['taskId'];
+    $title = $_POST['title'];
+    $desc = $_POST['description'];
+
+    $updatesql = "UPDATE tasks SET task_title='$title', task_description='$desc' WHERE task_id=$id";
+    if (mysqli_query($conn, $updatesql)) {
+     header("Location: dashboard.php");
+    } else {
+    echo "Error updating record: " . mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
+}
+
 
 
 ?>
