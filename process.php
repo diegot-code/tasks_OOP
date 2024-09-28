@@ -4,6 +4,26 @@ session_start();
 require_once("dbc.php");
 
 
+class Task {
+    public $task_id;
+    public $task_title;
+    public $task_desc;
+
+    private $conn;
+
+    private function __construct($serverName, $userName, $password, $databaseName) {
+    
+    $this->conn = mysqli_connect($serverName, $userName, $password, $databaseName);
+    if(!conn) {
+        header("Location: index.php");
+    }
+    }
+
+
+
+
+}
+
 if(isset($_POST['addTask'])) {
     $title = $_POST['title'];
     $desc = $_POST['description'];
