@@ -13,7 +13,7 @@
       <!-- Form to edit task -->
       <form id="editTaskForm" method="POST" action="process.php">
         <label for="title">Task Title</label>
-        <input type="hidden" name="taskId" value="<?= $_POST['taskId'] ?>" required>
+        <input type="hidden" name="taskId" value="<?= $_POST['taskId'] ?>">
         <input type="text" id="title" name="title" value="<?= $_POST['taskTitle'] ?>" required>
 
         <label for="description">Task Description</label>
@@ -23,10 +23,10 @@
       </form>
 
       <!-- Delete Task button -->
-      <form id="deleteTaskForm" method="POST" action="delete_task.php">
+      <form id="deleteTaskForm" method="POST" action="process.php">
         <!-- You may pass the task ID in a hidden input -->
-        <input type="hidden" name="task_id" value="">
-        <button type="submit" class="delete-btn">Delete Task</button>
+        <input type="hidden" name="taskId" value="<?= $_POST['taskId'] ?>">
+        <button type="submit" name="deleteTask" class="delete-btn">Delete Task</button>
       </form>
     </div>
   </div>

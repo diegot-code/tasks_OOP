@@ -35,6 +35,21 @@ if(isset($_POST['updateTask'])) {
     mysqli_close($conn);
 }
 
+if(isset($_POST['deleteTask'])) {
+    $id = $_POST['taskId'];
+
+    // sql to delete a record
+    $deletesql = "DELETE FROM tasks WHERE task_id=$id";
+
+    if (mysqli_query($conn, $deletesql)) {
+        header("Location: dashboard.php");
+    } else {
+    echo "Error deleting record: " . mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
+}
+
 
 
 ?>
