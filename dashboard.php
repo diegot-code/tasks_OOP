@@ -2,13 +2,16 @@
 
 session_start();
 
-// if(!isset($_SESSION['user_id'])) {
-//   header("Location: index.php");
-// }
+// echo $_SESSION['userLoggedID'];
+
+if(!isset($_SESSION['userLoggedID'])) {
+  header("Location: index.php");
+  exit;
+}
 
 require_once("dbc.php");
 
-$sql = "SELECT * FROM tasks";
+$sql = "SELECT * FROM tasks WHERE user_id = {$_SESSION['userLoggedID']}";
 $result = mysqli_query($conn, $sql);
 
 ?>
@@ -24,6 +27,9 @@ $result = mysqli_query($conn, $sql);
   <div class="container">
     <header>
       <h1>Task Dashboard</h1>
+      <form action="process.php" method="POST">
+        <button type="submit" id="logoutBtn" name="processType" value="logout">Logout</button>
+      </form>
       <button id="addTaskBtn">Add Task</button>
     </header>
 

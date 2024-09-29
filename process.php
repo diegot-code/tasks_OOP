@@ -3,8 +3,9 @@
 session_start();
 require_once("dbc.php");
 
-if($_SERVER['REQUEST_METHOD'] != "POST") {
+if($_SERVER['REQUEST_METHOD'] != "POST" || !isset($_POST['processType'])) {
     header("Location: dashboard.php");
+    exit;
 }
 
 
@@ -70,6 +71,8 @@ class Task {
 // }
 
 
+// echo $_POST['processType'];die;
+
 switch($_POST['processType']) {
     case 'addTask':
         $title = $_POST['title'];
@@ -80,6 +83,7 @@ switch($_POST['processType']) {
 
         if (mysqli_query($conn, $addsql)) {
         header("Location: dashboard.php");
+        exit;
         } else {
         echo "Error: " . $addsql . "<br>" . mysqli_error($conn);
         }
@@ -93,6 +97,7 @@ switch($_POST['processType']) {
         $updatesql = "UPDATE tasks SET task_title='$title', task_description='$desc' WHERE task_id=$id";
         if (mysqli_query($conn, $updatesql)) {
         header("Location: dashboard.php");
+        exit;
         } else {
         echo "Error updating record: " . mysqli_error($conn);
         }
@@ -106,15 +111,33 @@ switch($_POST['processType']) {
 
         if (mysqli_query($conn, $deletesql)) {
             header("Location: dashboard.php");
+            exit;
         } else {
         echo "Error deleting record: " . mysqli_error($conn);
         }
 
         mysqli_close($conn);
+    case 'login':
+        $id = $_POST['user_id'];
+
+        $findUserQuery = "SELECT * FROM users WHERE user_id=$id";
+        // echo $findUserQuery;die;
+        $response = mysqli_query($conn, $findUserQuery);
+        // echo mysqli_num_rows($response);die;
+
+        if(mysqli_num_rows($response) > 0) {
+            $_SESSION['userLoggedID'] = $id;
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            header("Location: index.php");
+        }
+    case 'logout':
+        unset($_SESSION['userLoggedID']);
+        header("Location: index.php");
+        exit;
 
 }
-
-
 ?>
 
 

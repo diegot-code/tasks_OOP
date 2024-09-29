@@ -23,7 +23,7 @@ session_start();
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required> -->
         <label for="userid">User ID</label>
-        <input type="text" id="userid" name="user_id">
+        <input type="text" value="1" id="userid" name="user_id" required>
 
         <button type="submit" name="processType" value="login">Login</button>
       </form>
