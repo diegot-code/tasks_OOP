@@ -62,7 +62,7 @@ class Task {
     public function updateTask() {
         // MARK: Update Task Method
 
-        $query = $this->conn->prepare("UPDATE tasks SET task_title = ?, task_description = ? WHERE task_id = ?");
+        $query = $this->conn->prepare("UPDATE $this->table_name SET task_title = ?, task_description = ? WHERE task_id = ?");
     
         $query->bind_param("sss", $this->title, $this->desc, $this->tid);
 
@@ -73,6 +73,20 @@ class Task {
             echo "Error Encountered: " . $query->error;
         }
         
+    }
+
+    public function deleteTask() {
+        // MARK: Update Task Method
+        
+        $query = $this->conn->prepare("DELETE FROM $this->table_name WHERE task_id = ?");
+        $query->bind_param("s", $this->tid);
+
+        if ($query->execute()) {
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            echo "Error Encountered: " . $query->error;
+        }
     }
 
 
@@ -194,19 +208,29 @@ switch($_POST['processType']) {
     case 'deleteTask':
         // MARK: Delete Task
 
-        $id = $_POST['taskId'];
+        // $id = $_POST['taskId'];
 
-        // sql to delete a record
-        $deletesql = "DELETE FROM tasks WHERE task_id=$id";
+        // // sql to delete a record
+        // $deletesql = "DELETE FROM tasks WHERE task_id=$id";
 
-        if ($conn->query($deletesql) === TRUE) {
+        // if ($conn->query($deletesql) === TRUE) {
+        //     header("Location: dashboard.php");
+        //     exit;
+        // } else {
+        // echo "Error deleting record: " . $conn->error;
+        // }
+
+        // mysqli_close($conn);
+        $task = new Task($servername, $username, $password, $dbname);
+        
+        $task->tid = $_POST['taskId'];
+            
+        if($task->deleteTask()) {
             header("Location: dashboard.php");
             exit;
         } else {
-        echo "Error deleting record: " . $conn->error;
+            echo "Error Occurred";
         }
-
-        mysqli_close($conn);
     case 'login':
         // MARK: Login
 
