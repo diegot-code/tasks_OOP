@@ -89,25 +89,38 @@ class Task {
 
 switch($_POST['processType']) {
     case 'addTask':
-        $title = $_POST['title'];
-        $desc = $_POST['description'];
+        // $title = $_POST['title'];
+        // $desc = $_POST['description'];
 
-        $addsql = "INSERT INTO tasks (task_title, task_description, user_id)
-        VALUES ('$title', '$desc', '1')";
+        // $addsql = "INSERT INTO tasks (task_title, task_description, user_id)
+        // VALUES ('$title', '$desc', '1')";
 
-        if ($conn->query($addsql) === TRUE) {
+        // if ($conn->query($addsql) === TRUE) {
+        //     header("Location: dashboard.php");
+        //     exit;
+        // } else {
+        //     echo "Error: " . $addsql . "<br>" . $conn->error;
+        // }
+
+        // mysqli_close($conn);
+        
+        
+        // Initialising a Task class
+        $task = new Task($servername, $username, $password, $dbname);
+        
+        // Set the title and Desc
+        $task->title = $_POST['title'];
+        $task->desc = $_POST['description'];
+        
+        // Call the addTask Method with the title and desc arguments
+        if($task->addTask()) {
             header("Location: dashboard.php");
             exit;
         } else {
-            echo "Error: " . $addsql . "<br>" . $conn->error;
+            echo "Error Occurred";
         }
 
-        mysqli_close($conn);
-        // $task = new Task($servername, $username, $password, $dbname);
-        // $task->title = $_POST['title'];
-        // $task->desc = $_POST['description'];
-        // echo $task->title;die;
-
+        // Return to dashboard.php and exit
 
 
     case 'updateTask':
