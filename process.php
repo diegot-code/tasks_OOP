@@ -9,36 +9,50 @@ if($_SERVER['REQUEST_METHOD'] != "POST" || !isset($_POST['processType'])) {
 }
 
 
+// echo $_POST['user_id'] . " " . $_POST['processType']; die;
+
 class Task {
-    public $task_id;
-    public $task_title;
-    public $task_desc;
+    public $id;
+    public $title;
+    public $desc;
 // give example
     public $table_name = "tasks";
 
     private $conn;
 
-    private function __construct($serverName, $userName, $password, $databaseName) {
-    
-    $this->conn = mysqli_connect($serverName, $userName, $password, $databaseName);
-    if(!conn) {
-        header("Location: index.php");
-    }
+    function __construct($serverName, $userName, $password, $databaseName) {
+        // Use mysqli::__construct instead of deprecated mysqli_connect
+        $this->conn = new mysqli($serverName, $userName, $password, $databaseName);
+        
+        // Check for connection error
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
+        }
     }
     
     public function addTask() {
-        $query = "INSERT INTO $this->$table_name (task_title, task_description, user_id)
-    VALUES ('$this->task_title', '$this->task_desc', '1')";
-
-    if (mysqli_query($this->conn, $query)) {
-        header("Location: dashboard.php");
-    } else {
-        echo "Error: " . $addsql . "<br>" . mysqli_error($conn);
-    }
+        $query = "INSERT INTO $this->table_name (task_title, task_description, user_id)
+                  VALUES ('$this->title', '$this->desc', '1')";
+                  
+        if ($this->conn->query($query)) {
+            header("Location: dashboard.php");
+        } else {
+            echo "Error: " . $query . "<br>" . $this->conn->error;
+        }
     }
 
 }
 
+// class User {
+//     public $UID;
+//     public $username;
+//     public $email;
+
+//     public function whoAmI() {
+//         echo $this->UID . " " . $this->username . " " . $this->email;
+//     }
+
+// }
 
 // if(isset($_POST['updateTask'])) {
 //     $id = $_POST['taskId'];
@@ -81,25 +95,32 @@ switch($_POST['processType']) {
         $addsql = "INSERT INTO tasks (task_title, task_description, user_id)
         VALUES ('$title', '$desc', '1')";
 
-        if (mysqli_query($conn, $addsql)) {
-        header("Location: dashboard.php");
-        exit;
+        if ($conn->query($addsql) === TRUE) {
+            header("Location: dashboard.php");
+            exit;
         } else {
-        echo "Error: " . $addsql . "<br>" . mysqli_error($conn);
+            echo "Error: " . $addsql . "<br>" . $conn->error;
         }
 
         mysqli_close($conn);
+        // $task = new Task($servername, $username, $password, $dbname);
+        // $task->title = $_POST['title'];
+        // $task->desc = $_POST['description'];
+        // echo $task->title;die;
+
+
+
     case 'updateTask':
         $id = $_POST['taskId'];
         $title = $_POST['title'];
         $desc = $_POST['description'];
 
         $updatesql = "UPDATE tasks SET task_title='$title', task_description='$desc' WHERE task_id=$id";
-        if (mysqli_query($conn, $updatesql)) {
+        if ($conn->query($updatesql) === TRUE) {
         header("Location: dashboard.php");
         exit;
         } else {
-        echo "Error updating record: " . mysqli_error($conn);
+        echo "Error updating record: " . $conn->error;
         }
 
         mysqli_close($conn);
@@ -109,11 +130,11 @@ switch($_POST['processType']) {
         // sql to delete a record
         $deletesql = "DELETE FROM tasks WHERE task_id=$id";
 
-        if (mysqli_query($conn, $deletesql)) {
+        if ($conn->query($deletesql) === TRUE) {
             header("Location: dashboard.php");
             exit;
         } else {
-        echo "Error deleting record: " . mysqli_error($conn);
+        echo "Error deleting record: " . $conn->error;
         }
 
         mysqli_close($conn);
@@ -122,15 +143,16 @@ switch($_POST['processType']) {
 
         $findUserQuery = "SELECT * FROM users WHERE user_id=$id";
         // echo $findUserQuery;die;
-        $response = mysqli_query($conn, $findUserQuery);
+        $response = $conn->query($findUserQuery);
         // echo mysqli_num_rows($response);die;
 
-        if(mysqli_num_rows($response) > 0) {
+        if ($response->num_rows > 0) {
             $_SESSION['userLoggedID'] = $id;
             header("Location: dashboard.php");
             exit;
         } else {
             header("Location: index.php");
+            exit;
         }
     case 'logout':
         unset($_SESSION['userLoggedID']);
