@@ -8,6 +8,9 @@ if($_SERVER['REQUEST_METHOD'] != "POST" || !isset($_POST['processType'])) {
     exit;
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // echo $_POST['user_id'] . " " . $_POST['processType']; die;
 
@@ -31,15 +34,32 @@ class Task {
     }
     
     public function addTask() {
-        $query = "INSERT INTO $this->table_name (task_title, task_description, user_id)
-                  VALUES ('$this->title', '$this->desc', '1')";
+        // MARK: Add Task Method
+
+        // $query = "INSERT INTO $this->table_name (task_title, task_description, user_id) VALUES ('$this->title', '$this->desc', '1')";
                   
-        if ($this->conn->query($query)) {
+        // if ($this->conn->query($query)) {
+        //     header("Location: dashboard.php");
+        // } else {
+        //     echo "Error: " . $query . "<br>" . $this->conn->error;
+        // }
+
+        $query = $this->conn->prepare("INSERT INTO $this->table_name (task_title, task_description, user_id) VALUES (?, ?, ?)");
+        $user_id = '1';
+        $query->bind_param("sss", $this->title, $this->desc, $user_id);
+
+        // echo $query;die;
+
+        if ($query->execute()) {
             header("Location: dashboard.php");
+            exit;
         } else {
-            echo "Error: " . $query . "<br>" . $this->conn->error;
+            echo "Error Encountered: " . $query->error;
         }
+        
     }
+    
+
 
 }
 
@@ -89,6 +109,7 @@ class Task {
 
 switch($_POST['processType']) {
     case 'addTask':
+        // MARK: Add Task
         // $title = $_POST['title'];
         // $desc = $_POST['description'];
 
@@ -124,6 +145,8 @@ switch($_POST['processType']) {
 
 
     case 'updateTask':
+        // MARK: Update Task
+
         $id = $_POST['taskId'];
         $title = $_POST['title'];
         $desc = $_POST['description'];
@@ -138,6 +161,8 @@ switch($_POST['processType']) {
 
         mysqli_close($conn);
     case 'deleteTask':
+        // MARK: Delete Task
+
         $id = $_POST['taskId'];
 
         // sql to delete a record
@@ -152,6 +177,8 @@ switch($_POST['processType']) {
 
         mysqli_close($conn);
     case 'login':
+        // MARK: Login
+
         $id = $_POST['user_id'];
 
         $findUserQuery = "SELECT * FROM users WHERE user_id=$id";
@@ -168,6 +195,8 @@ switch($_POST['processType']) {
             exit;
         }
     case 'logout':
+        // MARK: Logout
+
         unset($_SESSION['userLoggedID']);
         header("Location: index.php");
         exit;
