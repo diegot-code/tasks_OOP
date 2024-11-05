@@ -18,7 +18,7 @@ class Task {
     public $id;
     public $title;
     public $desc;
-// give example
+    public $tid;
     public $table_name = "tasks";
 
     private $conn;
@@ -58,7 +58,22 @@ class Task {
         }
         
     }
+
+    public function updateTask() {
+        // MARK: Update Task Method
+
+        $query = $this->conn->prepare("UPDATE tasks SET task_title = ?, task_description = ? WHERE task_id = ?");
     
+        $query->bind_param("sss", $this->title, $this->desc, $this->tid);
+
+        if ($query->execute()) {
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            echo "Error Encountered: " . $query->error;
+        }
+        
+    }
 
 
 }
@@ -132,6 +147,7 @@ switch($_POST['processType']) {
         // Set the title and Desc
         $task->title = $_POST['title'];
         $task->desc = $_POST['description'];
+
         
         // Call the addTask Method with the title and desc arguments
         if($task->addTask()) {
@@ -147,19 +163,34 @@ switch($_POST['processType']) {
     case 'updateTask':
         // MARK: Update Task
 
-        $id = $_POST['taskId'];
-        $title = $_POST['title'];
-        $desc = $_POST['description'];
+        // $id = $_POST['taskId'];
+        // $title = $_POST['title'];
+        // $desc = $_POST['description'];
 
-        $updatesql = "UPDATE tasks SET task_title='$title', task_description='$desc' WHERE task_id=$id";
-        if ($conn->query($updatesql) === TRUE) {
-        header("Location: dashboard.php");
-        exit;
+        // $updatesql = "UPDATE tasks SET task_title='$title', task_description='$desc' WHERE task_id=$id";
+        // if ($conn->query($updatesql) === TRUE) {
+        // header("Location: dashboard.php");
+        // exit;
+        // } else {
+        // echo "Error updating record: " . $conn->error;
+        // }
+
+        // mysqli_close($conn);
+        $task = new Task($servername, $username, $password, $dbname);
+        
+        // Set the title and Desc
+        $task->title = $_POST['title'];
+        $task->desc = $_POST['description'];
+        $task->tid = $_POST['taskId'];
+            
+        if($task->updateTask()) {
+            header("Location: dashboard.php");
+            exit;
         } else {
-        echo "Error updating record: " . $conn->error;
+            echo "Error Occurred";
         }
 
-        mysqli_close($conn);
+
     case 'deleteTask':
         // MARK: Delete Task
 
